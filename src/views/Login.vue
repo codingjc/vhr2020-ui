@@ -43,8 +43,8 @@ export default {
             postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
               if(resp){
                 //登录成功，将用户信息保存在session中
-                window.sessionStorage.setItem('user', JSON.stringify(resp))
-
+                window.sessionStorage.setItem('user', JSON.stringify(resp));
+                this.$router.replace('/home');
               }
             });
             // 登录
