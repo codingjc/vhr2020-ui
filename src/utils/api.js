@@ -39,7 +39,6 @@ export const postKeyValueRequest = (url, parmas)=>{
             for (let i in data){
                 rlt += encodeURIComponent(i) + '=' + encodeURIComponent(data[i]) + '&';
             }
-            console.log(rlt);
             return rlt;
         }],
         headers:{
@@ -47,3 +46,35 @@ export const postKeyValueRequest = (url, parmas)=>{
         }
     })
 }
+
+export const postRequest = (url, params) => {
+    return axios({
+        method: 'post',
+        url: `${base}${url}`,
+        data: params
+    })
+};
+
+export const putRequest = (url, params) => {
+    return axios({
+        method: 'put',
+        url: `${base}${url}`,
+        data: params
+    })
+};
+
+export const getRequest = (url, params) => {
+    return axios({
+        method: 'get',
+        url: `${base}${url}`,
+        data: params
+    })
+};
+
+export const deleteRequest = (url, params) => {
+    return axios({
+        method: 'delete',
+        url: `${base}${url}`,
+        data: params
+    })
+};

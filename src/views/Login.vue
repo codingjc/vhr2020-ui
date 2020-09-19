@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {postKeyValueRequest} from '../utils/api';
+// import {postKeyValueRequest} from '../utils/api';
 export default {
   name: "Login",
   data () {
@@ -40,7 +40,7 @@ export default {
       submitLogin() {
           this.$refs.loginForm.validate((valid) => {
           if (valid) {
-            postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
+            this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
               if(resp){
                 //登录成功，将用户信息保存在session中
                 window.sessionStorage.setItem('user', JSON.stringify(resp));
