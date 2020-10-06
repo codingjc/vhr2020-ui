@@ -7,7 +7,7 @@ proxyObj['/']={
     pathRewrite: {
         '^/': ''
     }
-}
+};
 
 module.exports={
     devServer: {
@@ -15,4 +15,4 @@ module.exports={
         port: 8080,
         proxy: proxyObj
     }
-}
+};

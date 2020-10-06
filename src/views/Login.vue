@@ -44,7 +44,9 @@ export default {
               if(resp){
                 //登录成功，将用户信息保存在session中
                 window.sessionStorage.setItem('user', JSON.stringify(resp.data));
-                this.$router.replace('/home');
+                let redirect = this.$route.query.redirect;
+                console.log(redirect);
+                this.$router.replace((redirect == '/' || redirect == undefined) ? '/home' : redirect);
               }
             });
             // 登录

@@ -24,12 +24,19 @@ Vue.prototype.deleteRequest = deleteRequest;
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 
+//路由导航守卫
 router.beforeEach((to, from, next) => {
   if (to.path == '/') {
     next();
   } else {
-    initMenu(router, store);
-    next();
+    //已登陆
+    if (window.sessionStorage.getItem("user")) {
+      initMenu(router, store);
+      next();
+    } else {
+      //去登陆
+      next('/?redirect=' + to.path);
+    }
   }
 });
 
