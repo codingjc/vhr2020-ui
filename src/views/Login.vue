@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div>
+  <div class="bgImg">
     <el-form :rules="rules" ref="loginForm" :model="loginForm" class="loginContainer">
         <h3 class="loginTitle">登录</h3>
         <!-- 用户名 -->
@@ -81,6 +81,15 @@ export default {
     .loginRemeber{
         text-align: left;
         margin: 0px 0px 15px 0px;
+    }
+
+    .bgImg{
+        background-image: url("../assets/bg.jpg");
+        background-repeat: initial;
+        width:100%;
+        height:100%;
+        position:fixed;
+        background-size: 100% 100%;
     }
 
 </style>
