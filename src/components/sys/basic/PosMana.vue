@@ -17,7 +17,7 @@
                     stripe
                     border
                     size="small"
-                    @selection-change="handleSelectionChange">
+                    @selection-change="handleSelectionChange"
                     style="width: 70%">
                 <el-table-column
                         type="selection"
