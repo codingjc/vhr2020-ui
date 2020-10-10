@@ -19,7 +19,7 @@
                 </el-option>
             </el-select>
 
-            <el-button icon="el-icon-plus" style="margin-left: 8px" size="small" type="primary">添加</el-button>
+            <el-button icon="el-icon-plus" style="margin-left: 8px" size="small" type="primary" @click="addJobLevel">添加</el-button>
         </div>
 
         <!--表格-->
@@ -63,7 +63,7 @@
                         <el-button
                                 size="mini"
                                 type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                @click="deleteJobLevel(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -95,6 +95,41 @@
             this.initJobLevels();
         },
         methods:{
+            deleteJobLevel(index, data){
+                this.$confirm('此操作将永久删除【'+ data.name +'】, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteRequest("/system/basic/job/" + data.id).then(resp => {
+                        if (resp) {
+                            this.initJobLevels();
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            addJobLevel(){
+                if (this.jl.name == '') {
+                    this.$message.error("请填写职称名称");
+                    return;
+                }
+                if (this.jl.titleLevel == '') {
+                    this.$message.error("请选择职称等级");
+                    return;
+                }
+              this.postRequest("/system/basic/job/", this.jl).then(resp => {
+                  if (resp) {
+                      this.initJobLevels();
+                      this.jl.name = '';
+                      this.jl.titleLevel = '';
+                  }
+              })
+            },
             initJobLevels(){
                 this.getRequest("/system/basic/job/").then(resp => {
                     if(resp){
