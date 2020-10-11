@@ -39,6 +39,15 @@
                         label="创建时间">
                 </el-table-column>
                 <el-table-column
+                        prop="enabled"
+                        label="是否启用"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-tag size="small" type="success" v-if="scope.row.enabled">已启用</el-tag>
+                        <el-tag type="danger" v-else="scope.row.enabled">未启用</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column
                         label="操作">
                     <template slot-scope="scope">
                     <el-button
@@ -65,6 +74,16 @@
                     <el-tag>职位名称</el-tag>
                     <el-input v-model="updatePos.name" class="updatePosInput" size="small"></el-input>
                 </div>
+                <div>
+                    <el-tag>是否启用</el-tag>
+                    <el-switch
+                            v-model="updatePos.enabled"
+                            active-text="启用"
+                            inactive-text="禁用"
+                            active-color="#13ce66"
+                            inactive-color="#ff4949">
+                    </el-switch>
+                </div>
                 <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false" size="small">取 消</el-button>
                 <el-button type="primary" @click="doUpdate" size="small">确 定</el-button>
@@ -85,7 +104,8 @@
                     name: ''
                 },
                 updatePos: {
-                    name: ''
+                    name: '',
+                    enabled: false
                 },
                 positions: [],
                 dialogVisible: false,
