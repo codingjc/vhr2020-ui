@@ -10,15 +10,16 @@
         </div>
 
         <div class="permissManaMain">
-            <el-collapse accordion>
-                <el-collapse-item :title="role.nameZh" :name="index" v-for="(role, index) in roles" :key="index">
+            <el-collapse accordion @change="handleChange">
+                <el-collapse-item :title="role.nameZh" :name="role.id" v-for="(role, index) in roles" :key="index">
                     <el-card class="box-card">
                         <div slot="header" class="clearfix">
                             <span>可操作的资源</span>
                             <el-button style="float: right; padding: 3px 0; color: #ff0000" icon="el-icon-delete" type="text"></el-button>
                         </div>
                         <div>
-
+                            <el-tree show-checkbox
+                                    :data="allMenus" :props="defaultProps"></el-tree>
                         </div>
                     </el-card>
                 </el-collapse-item>
@@ -40,13 +41,23 @@
                     name:'',
                     nameZh:''
                 },
-                roles:[]
+                roles:[],
+                allMenus:[],
+                defaultProps: {
+                    children: 'children',
+                    label: 'name'
+                }
             }
         },
         created(){
             this.initRoles();
         },
         methods:{
+            handleChange(name){
+                if(name){
+                    this.initMenus();
+                }
+            },
             addPermiss(){
 
             },
@@ -54,6 +65,13 @@
                 this.getRequest("/system/basic/per/").then(resp => {
                     if (resp) {
                         this.roles = resp;
+                    }
+                })
+            },
+            initMenus(){
+                this.getRequest("/system/basic/per/menus").then(resp => {
+                    if(resp){
+                        this.allMenus = resp;
                     }
                 })
             }
