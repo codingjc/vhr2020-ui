@@ -6,7 +6,7 @@
                     class="addJobLevel"
                     placeholder="添加职称..."
                     prefix-icon="el-icon-plus"
-                    size="s mall"
+                    size="small"
                     v-model="jl.name">
             </el-input>
 
