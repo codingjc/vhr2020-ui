@@ -119,8 +119,41 @@
                 this.dialogVisible = true;
 
             },
+
+            removeDepFromDeps(deps, id){
+              for(let i = 0; i < deps.length; i++){
+                let d = deps[i];
+                if (d.id == id) {
+                  deps.splice(i, 1);
+                  return;
+                }else {
+                  this.removeDepFromDeps(d.children, id);
+                }
+              }
+            },
+
             deleteDep(data){
-                console.log(data)
+              if (data.isParent) {
+                this.$message.error('当前部门包含子部门')
+                return;
+              }
+
+              this.$confirm('此操作将删除【' + data.name + '】该职位, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.deleteRequest("/system/basic/department/" + data.id).then(resp => {
+                  if (resp) {
+                    this.removeDepFromDeps(this.deps, data.id);
+                  }
+                })
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消删除'
+                });
+              });
             },
             initdeps(){
                 this.getRequest("/system/basic/department/").then(resp => {
