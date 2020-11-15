@@ -98,7 +98,7 @@
     }
 
     .homeHeader{
-        background-color: #6816ca;
+        background-color: #6264d9;
         display: flex;
         align-items: center;
         justify-content: space-between;
