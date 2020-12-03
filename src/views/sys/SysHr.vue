@@ -2,8 +2,8 @@
     <div>
       <div style="margin-top: 10px; display: flex; justify-content: center">
         <el-input v-model="keyword" placeholder="通过用户名搜索用户..." prefix-icon="el-icon-search"
-                  style="width: 400px;margin-right: 10px"></el-input>
-        <el-button icon="el-icon-search" type="primary" size="small">搜索</el-button>
+                  style="width: 400px;margin-right: 10px" @keydown.enter.native="search"></el-input>
+        <el-button icon="el-icon-search" type="primary" size="small" @click="search">搜索</el-button>
       </div>
       <div class="hr-container">
         <el-card class="hr-card" v-for="(hr, index) in hrs" :key="index" >
@@ -29,7 +29,26 @@
                   inactive-text="禁用">
               </el-switch></div>
               <div>用户角色:<el-tag type="success" style="margin-right: 4px" v-for="(item, indexj) in hr.roles"
-                                :key="indexj">{{item.nameZh}}</el-tag><el-button icon="el-icon-more" type="text"></el-button></div>
+                                :key="indexj">{{item.nameZh}}</el-tag>
+
+                <el-popover
+                    placement="right"
+                    title="角色列表"
+                    @show="showPop(hr)"
+                    @hide="hidePop(hr)"
+                    width="200"
+                    trigger="click">
+                  <el-select v-model="selectRoles" multiple placeholder="请选择">
+                    <el-option
+                        v-for="(r, indexj) in allRoles"
+                        :key="indexj"
+                        :label="r.nameZh"
+                        :value="r.id">
+                    </el-option>
+                  </el-select>
+                  <el-button slot="reference" icon="el-icon-more" type="text"></el-button>
+                </el-popover>
+              </div>
               <div>备注:{{hr.remark}}</div>
             </div>
           </div>
@@ -44,13 +63,67 @@
       data() {
         return {
           keyword: '',
-          hrs:[]
+          hrs:[],
+          selectRoles:[],
+          allRoles:[]
         }
       },
       mounted() {
         this.initHrs();
       },
       methods:{
+        search(){
+          this.initHrs();
+        },
+        showPop(hr){
+          this.initAllRoles();
+          let roles = hr.roles;
+          this.selectRoles = [];
+          roles.forEach(role => {
+            this.selectRoles.push(role.id);
+          })
+        },
+        hidePop(hr){
+          let roles = [];
+          Object.assign(roles, hr.roles);
+          let flag = false;
+          if (roles.length != this.selectRoles.length) {
+            flag = true;
+          } else {
+            for(let i=0; i< roles.length ; i++){
+              let role = roles[i];
+              for (let j=0; j < this.selectRoles.length; j++){
+                let sr = this.selectRoles[i];
+                if (role.id == sr) {
+                  roles.splice(i, 1);
+                  i--;
+                  break;
+                }
+              }
+            }
+            if (roles.length = 0) {
+              flag = true;
+            }
+          }
+          if (flag) {
+            let url = '/system/hr/updateHrRole?hrId=' + hr.id;
+            this.selectRoles.forEach(role => {
+              url += "&rids=" + role
+            })
+            this.putRequest(url).then(resp =>{
+              if (resp) {
+                this.initHrs();
+              }
+            })
+          }
+        },
+        initAllRoles(){
+          this.getRequest("/system/hr/roles").then(resp => {
+            if (resp) {
+              this.allRoles = resp;
+            }
+          })
+        },
         enabledChange(hr){
           console.log(hr);
           delete hr.roles;
@@ -61,7 +134,7 @@
           })
         },
         initHrs(){
-          this.getRequest("/system/hr/").then(resp => {
+          this.getRequest("/system/hr/?keyword=" + this.keyword).then(resp => {
             if (resp) {
               this.hrs = resp;
             }
