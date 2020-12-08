@@ -1,7 +1,12 @@
 <!--  -->
 <template>
   <div class="bgImg">
-    <el-form :rules="rules" ref="loginForm" :model="loginForm" class="loginContainer">
+    <el-form
+        v-loading="loading"
+        :rules="rules"
+        ref="loginForm"
+        :model="loginForm"
+        class="loginContainer">
         <h3 class="loginTitle">登录</h3>
         <!-- 用户名 -->
         <el-form-item prop="username">
@@ -25,6 +30,7 @@ export default {
   name: "Login",
   data () {
     return {
+        loading: false,
         loginForm:{
             username: 'admin',
             password: '123'
@@ -40,7 +46,9 @@ export default {
       submitLogin() {
           this.$refs.loginForm.validate((valid) => {
           if (valid) {
+            this.loading = true;
             this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
+              this.loading = false;
               if(resp){
                 //登录成功，将用户信息保存在session中
                 window.sessionStorage.setItem('user', JSON.stringify(resp.data));

@@ -13,6 +13,7 @@
         </div>
         <div>
             <el-table
+                    v-loading="loading"
                     :data="positions"
                     stripe
                     border
@@ -100,6 +101,7 @@
         name: "PosMana",
         data(){
             return{
+                loading: false,
                 pos: {
                     name: ''
                 },
@@ -160,7 +162,9 @@
               }
             },
             initPositions(){
+                this.loading = true;
                 this.getRequest("/system/basic/pos/").then(resp => {
+                    this.loading = false;
                     if(resp){
                         this.positions = resp;
                     }

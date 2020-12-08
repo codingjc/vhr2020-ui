@@ -29,6 +29,7 @@
                     size="small"
                     stripe
                     border
+                    v-loading="loading"
                     @selection-change="handleSelectionChange"
                     style="width: 70%">
                 <el-table-column
@@ -142,25 +143,26 @@
         name: "JobLevelMana",
         data(){
             return{
-                dialogVisible: false,
-                jl:{
-                    name: '',
-                    titleLevel: ''
-                },
-                updateJl:{
-                    name: '',
-                    titleLevel: '',
-                    enabled: false
-                },
-                titleLevels:[
-                    '正高级',
-                    '副高级',
-                    '中级',
-                    '初级',
-                    '员级'
-                ],
-                JobLevels: [],
-                multipleSelection: []
+              loading:false,
+              dialogVisible: false,
+              jl:{
+                name: '',
+                titleLevel: ''
+              },
+              updateJl:{
+                name: '',
+                titleLevel: '',
+                enabled: false
+              },
+              titleLevels:[
+                '正高级',
+                '副高级',
+                '中级',
+                '初级',
+                '员级'
+              ],
+              JobLevels: [],
+              multipleSelection: []
             }
         },
         mounted(){
@@ -247,11 +249,13 @@
               })
             },
             initJobLevels(){
-                this.getRequest("/system/basic/job/").then(resp => {
-                    if(resp){
-                        this.JobLevels = resp;
-                    }
-                })
+              this.loading = true;
+              this.getRequest("/system/basic/job/").then(resp => {
+                this.loading = false;
+                if(resp){
+                  this.JobLevels = resp;
+                }
+              })
             }
         }
     }

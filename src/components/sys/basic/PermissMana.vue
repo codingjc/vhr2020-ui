@@ -10,7 +10,7 @@
         </div>
 
         <div class="permissManaMain">
-            <el-collapse v-model="activeName" accordion @change="handleChange">
+            <el-collapse v-model="activeName" v-loading="loading" accordion @change="handleChange">
                 <el-collapse-item :title="role.nameZh" :name="role.id" v-for="(role, index) in roles" :key="index">
                     <el-card class="box-card">
                         <div slot="header" class="clearfix">
@@ -41,6 +41,7 @@
         name: "PermissMana",
         data(){
             return{
+                loading: false,
                 role:{
                     name:'',
                     nameZh:''
@@ -125,7 +126,9 @@
                 })
             },
             initRoles(){
+                this.loading = true;
                 this.getRequest("/system/basic/per/").then(resp => {
+                    this.loading = false;
                     if (resp) {
                         this.roles = resp;
                     }
