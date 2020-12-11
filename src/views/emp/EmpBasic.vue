@@ -6,10 +6,13 @@
               style="width: 300px; margin-right: 10px"
               placeholder="通过员工名搜索员工,记得回车哦..."
               suffix-icon="el-icon-search"
+              clearable
+              @clear="initEmps"
               size="small"
-              v-model="empName">
+              @keydown.enter.native="initEmps"
+              v-model="keyword">
           </el-input>
-          <el-button icon="el-icon-search" type="primary" size="small">搜索</el-button>
+          <el-button icon="el-icon-search" type="primary" size="small" @click="initEmps">搜索</el-button>
           <el-button type="primary" size="small">
             <i class="fa fa-angle-double-down" aria-hidden="true"></i>
             高级搜索
@@ -33,6 +36,7 @@
             :data="emps"
             border
             stripe
+            v-loading="loading"
             style="width: 100%">
           <el-table-column
               type="selection"
@@ -55,7 +59,7 @@
               prop="birthday"
               label="出生日期"
               align="left"
-              width="85">
+              width="100">
           </el-table-column>
           <el-table-column
               prop="idCard"
@@ -74,7 +78,7 @@
               width="50">
           </el-table-column>
           <el-table-column
-              prop="nationPlace"
+              prop="nativePlace"
               label="籍贯"
               width="80">
           </el-table-column>
@@ -93,7 +97,7 @@
               prop="phone"
               label="电话号码"
               align="left"
-              width="100">
+              width="120">
           </el-table-column>
           <el-table-column
               prop="address"
@@ -126,25 +130,25 @@
               prop="beginDate"
               label="入职日期"
               align="left"
-              width="85">
+              width="100">
           </el-table-column>
           <el-table-column
               prop="conversionTime"
               label="转正日期"
               align="left"
-              width="85">
+              width="100">
           </el-table-column>
           <el-table-column
               prop="beginContract"
               label="合同起始日期"
               align="left"
-              width="95">
+              width="110">
           </el-table-column>
           <el-table-column
               prop="endContract"
               label="合同终止日期"
               align="left"
-              width="95">
+              width="110">
           </el-table-column>
           <el-table-column
               prop="contractTerm"
@@ -167,6 +171,15 @@
             </template>
           </el-table-column>
         </el-table>
+        <div style="display: flex; justify-content: flex-end; margin-top: 5px">
+          <el-pagination
+              background
+              @current-change="currentChange"
+              @size-change="sizeChange"
+              layout="sizes, prev, pager, next, jumper, ->, total, slot"
+              :total="total">
+          </el-pagination>
+        </div>
       </div>
     </div>
 </template>
@@ -177,17 +190,32 @@
       data(){
         return{
           emps:[],
-          empName:''
+          keyword:'',
+          loading:false,
+          total:0,
+          page:1,
+          size:10
         }
       },
       mounted() {
         this.initEmps();
       },
       methods:{
+        sizeChange(currentSize){
+          this.size = currentSize;
+          this.initEmps();
+        },
+        currentChange(currentPage){
+          this.page = currentPage;
+          this.initEmps();
+        },
         initEmps(){
-          this.getRequest("/emp/basic/").then(resp => {
+          this.loading=true;
+          this.getRequest("/emp/basic/?page=" + this.page + "&size=" + this.size + "&keyWord=" + this.keyword).then(resp => {
+            this.loading=false;
             if (resp) {
               this.emps = resp.data;
+              this.total=resp.total;
             }
           })
         }
